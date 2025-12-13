@@ -2,6 +2,7 @@ import express from "express";
 import { config } from "dotenv";
 import { connectDB } from "./config/db.js";
 import cors from "cors";
+import "./workers/csvWorker.js";
 
 import reportRoutes from "./routes/report.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
