@@ -26,31 +26,16 @@ const UploadCSV = () => {
   const [file, setFile] = useState(null);
   const [jobId, setJobId] = useState(null);
 
-  // Upload mutation
   const [submitBulkReports, { isLoading: isUploading }] =
     useSubmitBulkReportsMutation();
 
-  /**
-   * Job status polling
-   * NOTE:
-   * - Poll only when jobId exists
-   * - Stop polling automatically when status === "completed"
-   */
-  const { data: jobStatus, isFetching: isPolling } = useGetJobStatusQuery(
-    jobId,
-    {
-      skip: !jobId,
-      pollingInterval: 2000,
-    }
-  );
-
-  const isCompleted = jobStatus?.data?.status === "completed";
-
-  // Stop polling once completed
-  useGetJobStatusQuery(jobId, {
-    skip: !jobId || isCompleted,
+  // Poll job status ONLY when jobId exists
+  const { data: jobStatus } = useGetJobStatusQuery(jobId, {
+    skip: !jobId,
     pollingInterval: 2000,
   });
+
+  const isCompleted = jobStatus?.data?.status === "completed";
 
   const handleFileSelect = (e) => {
     const selectedFile = e.target.files[0];
@@ -81,11 +66,14 @@ const UploadCSV = () => {
     }
   };
 
+  // Job stats
   const total = jobStatus?.data?.totalRecords || 0;
-  const processed = jobStatus?.data?.processedRecords || 0;
+  const success = jobStatus?.data?.processedRecords || 0;
   const failed = jobStatus?.data?.failedRecords || 0;
 
-  const progress = total > 0 ? Math.round((processed / total) * 100) : 0;
+  const handled = success + failed;
+
+  const progress = total > 0 ? Math.round((handled / total) * 100) : 0;
 
   return (
     <Box
@@ -181,6 +169,7 @@ const UploadCSV = () => {
                 <LinearProgress
                   variant={total > 0 ? "determinate" : "indeterminate"}
                   value={progress}
+                  sx={{ height: 8, borderRadius: 5, mb: 1 }}
                 />
 
                 <Stack direction="row" justifyContent="space-between" mb={3}>
@@ -191,7 +180,7 @@ const UploadCSV = () => {
                   />
 
                   <Typography variant="body2" color="text.secondary">
-                    {processed} / {total} processed
+                    {handled} / {total} processed
                   </Typography>
                 </Stack>
 
@@ -209,7 +198,7 @@ const UploadCSV = () => {
                     </Typography>
                     <Chip
                       icon={<CheckCircleIcon />}
-                      label={processed}
+                      label={success}
                       color="success"
                       size="small"
                     />
