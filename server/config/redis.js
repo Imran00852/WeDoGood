@@ -1,0 +1,10 @@
+import { Redis } from "ioredis";
+import { config } from "dotenv";
+
+config();
+
+const connection = new Redis(process.env.REDIS_URL, {
+  maxRetriesPerRequest: null,
+});
+
+export default connection;
