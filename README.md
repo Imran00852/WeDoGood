@@ -125,7 +125,7 @@ cd WeDoGood
 ### 2️⃣ Backend Setup
 
 ```bash
-cd backend
+cd server
 npm install
 npm run dev
 ```
@@ -133,7 +133,7 @@ npm run dev
 Server runs on:
 
 ```
-http://localhost:5000
+http://localhost:8080
 ```
 
 ---
@@ -143,7 +143,7 @@ http://localhost:5000
 Open a new terminal:
 
 ```bash
-cd backend
+cd server
 node workers/csvWorker.js
 ```
 
@@ -152,7 +152,7 @@ node workers/csvWorker.js
 ### 4️⃣ Frontend Setup
 
 ```bash
-cd frontend
+cd client
 npm install
 npm run dev
 ```
