@@ -11,6 +11,7 @@ export const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI, {
       dbName: "NGO",
+      autoIndex: true,
     });
     console.log(`MongoDB connected: ${conn.connection.host}`);
     await Report.syncIndexes();
